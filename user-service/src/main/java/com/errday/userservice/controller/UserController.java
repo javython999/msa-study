@@ -15,9 +15,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @RestController
-@RequestMapping("/")
+@RequestMapping("/user-service")
 @RequiredArgsConstructor
 public class UserController {
 
@@ -51,5 +53,20 @@ public class UserController {
         ResponseUser responseUser = mapper.map(userDto, ResponseUser.class);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(responseUser);
+    }
+
+    @GetMapping("/users")
+    public ResponseEntity<List<ResponseUser>> findAll() {
+        List<ResponseUser> users = userService.findAll()
+                .stream()
+                .map(user -> new ModelMapper().map(user, ResponseUser.class))
+                .toList();
+        return ResponseEntity.status(HttpStatus.OK).body(users);
+    }
+
+    @GetMapping("/users/{userId}")
+    public ResponseEntity<ResponseUser> findUser(@PathVariable String userId) {
+        UserDto findUser = userService.findByUserId(userId);
+        return ResponseEntity.status(HttpStatus.OK).body(new ModelMapper().map(findUser, ResponseUser.class));
     }
 }
