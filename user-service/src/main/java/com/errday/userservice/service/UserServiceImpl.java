@@ -6,9 +6,13 @@ import com.errday.userservice.jpa.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
@@ -21,6 +25,7 @@ public class UserServiceImpl implements UserService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final ModelMapper modelMapper = new ModelMapper();
 
+    @Override
     public UserDto createUser(UserDto userDto) {
         userDto.setUserId(UUID.randomUUID().toString());
 
@@ -49,5 +54,17 @@ public class UserServiceImpl implements UserService {
                 .toList();
     }
 
+    @Override
+    public UserDto getUserDetailsByEmail(String email) {
+        UserEntity findUser = userRepository.findByEmail(email)
+                .orElseThrow(() -> new NoSuchElementException("User not found by userId: " + email));
+        return modelMapper.map(findUser, UserDto.class);
+    }
 
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        UserEntity findUser = userRepository.findByEmail(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found by username: " + username));
+        return  new User(findUser.getEmail(), findUser.getEncryptedPwd(), true, true, true, true, new ArrayList<>());
+    }
 }
