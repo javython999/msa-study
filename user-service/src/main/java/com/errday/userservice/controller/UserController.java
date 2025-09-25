@@ -15,7 +15,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -31,15 +33,15 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/health-check")
-    public String status() {
-        return new StringBuilder()
-                .append("It's Working in User Service").append("\n")
-                .append("port(local.server.port) = ").append(env.getProperty("local.server.port")).append("\n")
-                .append("port(server.port) = ").append(env.getProperty("server.port")).append("\n")
-                .append("gateway ip(env) = ").append(env.getProperty("gateway.ip")).append("\n")
-                .append("token secret key = ").append(env.getProperty("token.secret")).append("\n")
-                .append("token expiration time = ").append(env.getProperty("token.expiration-time")).append("\n")
-                .toString();
+    public Map<String, String> status() {
+        Map<String, String> status = new LinkedHashMap<>();
+        status.put("message", "It's Working in User Service");
+        status.put("local.server.port", env.getProperty("local.server.port"));
+        status.put("server.port", env.getProperty("server.port"));
+        status.put("gateway.ip", env.getProperty("gateway.ip"));
+        status.put("token.secret", env.getProperty("token.secret"));
+        status.put("token.expiration-time", env.getProperty("token.expiration-time"));
+        return status;
     }
 
     @GetMapping("/welcome")
