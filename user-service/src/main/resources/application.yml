@@ -45,3 +45,13 @@ greeting:
 token:
   secret: thisIsVeryvEryveRyveryLonglOngloNglonGSecretKey
   expiration-time: 86400000 # 10 days
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - refresh
+          - health
+          - beans
+          - info
