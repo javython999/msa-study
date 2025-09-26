@@ -10,3 +10,13 @@ spring:
         git:
           uri: file://R:/IdeaProject/msa-study
           default-label: main
+
+management:
+  endpoints:
+    web:
+      exposure:
+        exclude:
+          - refresh
+          - health
+          - beans
+          - info
