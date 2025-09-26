@@ -5,5 +5,5 @@ token:
 gateway:
   ip: 192.168.50.90
 
-greeting:
-  message: Welcome to the Simple E-commerce (config-server)
+#greeting:
+#  message: Welcome to the Simple E-commerce (config-server)
