@@ -1,5 +1,5 @@
 token:
-  secret: thisIsVeryvEryveRyveryLonglOngloNglonGSecretKey-frOm-gIt
+  secret: changed-thisIsVeryvEryveRyveryLonglOngloNglonGSecretKey-frOm-gIt
   expiration-time: 86400000 # 10 days
 
 gateway:
