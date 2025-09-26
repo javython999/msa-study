@@ -4,8 +4,10 @@ server:
 spring:
   application:
     name: user-service
+  profiles:
+    active: dev
 
-#  config:
+  #  config:
 #    import: "optional:configserver:http://localhost:8888"
 
   h2:
