@@ -39,6 +39,7 @@ public class UserController {
         status.put("local.server.port", env.getProperty("local.server.port"));
         status.put("server.port", env.getProperty("server.port"));
         status.put("gateway.ip", env.getProperty("gateway.ip"));
+        status.put("welcome message", env.getProperty("greeting.message"));
         status.put("token.secret", env.getProperty("token.secret"));
         status.put("token.expiration-time", env.getProperty("token.expiration-time"));
         return status;
