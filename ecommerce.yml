@@ -1,9 +1,0 @@
-token:
-  secret: changed!!!!-thisIsVeryvEryveRyveryLonglOngloNglonGSecretKey-frOm-gIt
-  expiration-time: 86400000 # 10 days
-
-gateway:
-  ip: 192.168.50.90
-
-#greeting:
-#  message: Welcome to the Simple E-commerce (config-server)

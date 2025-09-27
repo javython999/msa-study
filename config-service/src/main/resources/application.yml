@@ -4,10 +4,14 @@ server:
 spring:
   application:
     name: config-service
+
+  profiles:
+    active: native
   cloud:
     config:
       server:
+        native:
+          search-locations: file:///R:/IdeaProject/native-file-repo
         git:
-          uri: file://R:/IdeaProject/msa-study
+          uri: https://github.com/javython999/spring-cloud-config
           default-label: main
-
