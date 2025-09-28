@@ -11,10 +11,14 @@ eureka:
 spring:
   application:
     name: apigateway-service
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: guest
+    password: guest
   cloud:
     gateway:
       server:
-#       webmvc:
         webflux:
           default-filters:
             - name: GlobalFilter
@@ -63,6 +67,14 @@ spring:
             - id: user-service
               uri: lb://USER-SERVICE
               predicates:
+                - Path=/user-service/actuator/**
+                - Method=GET,POST
+              filters:
+                - RemoveRequestHeader=Cookie
+                - RewritePath=/user-service/(?<segment>.*), /$\{segment}
+            - id: user-service
+              uri: lb://USER-SERVICE
+              predicates:
                 - Path=/user-service/**
                 - Method=GET
               filters:
@@ -77,17 +89,14 @@ spring:
               uri: lb://ORDER-SERVICE
               predicates:
                 - Path=/order-service/**
-
 management:
   endpoints:
     web:
       exposure:
         include:
           - refresh
+          - busrefresh
           - health
           - beans
           - info
           - httpexchanges
-
-#token:
-#  secret: thisIsVeryvEryveRyveryLonglOngloNglonGSecretKey

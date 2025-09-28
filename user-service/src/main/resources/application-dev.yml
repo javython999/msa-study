@@ -5,9 +5,6 @@ spring:
   application:
     name: user-service
 
-#  config:
-#    import: "optional:configserver:http://localhost:8888"
-
   h2:
     console:
       enabled: true
@@ -42,16 +39,13 @@ eureka:
 greeting:
   message: Welcome to the Simple E-commerce (dev profile)
 
-#token:
-#  secret: thisIsVeryvEryveRyveryLonglOngloNglonGSecretKey
-#  expiration-time: 86400000 # 10 days
-
 management:
   endpoints:
     web:
       exposure:
         include:
           - refresh
+          - busrefresh
           - health
           - beans
           - info

@@ -4,11 +4,12 @@ server:
 spring:
   application:
     name: user-service
-  profiles:
-    active: dev
 
-  #  config:
-#    import: "optional:configserver:http://localhost:8888"
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: guest
+    password: guest
 
   h2:
     console:
@@ -44,16 +45,15 @@ eureka:
 greeting:
   message: Welcome to the Simple E-commerce
 
-#token:
-#  secret: thisIsVeryvEryveRyveryLonglOngloNglonGSecretKey
-#  expiration-time: 86400000 # 10 days
-
 management:
   endpoints:
+    enabled-by-default: true
     web:
       exposure:
         include:
           - refresh
+          - busrefresh
           - health
           - beans
           - info
+          - httpexchanges
