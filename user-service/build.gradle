@@ -38,6 +38,7 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-config'
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
     implementation 'org.springframework.cloud:spring-cloud-starter-bus-amqp'
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
     implementation 'org.modelmapper:modelmapper:3.2.4'
     implementation 'io.jsonwebtoken:jjwt-api:0.13.0'
 

@@ -32,6 +32,7 @@ public class OrderServiceImpl implements OrderService {
     public List<OrderDto> findByUserId(String userId) {
         return orderRepository.findAll()
                 .stream()
+                .filter(order -> order.getUserId().equals(userId))
                 .map(orderEntity -> modelMapper.map(orderEntity, OrderDto.class))
                 .toList();
     }

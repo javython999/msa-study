@@ -1,8 +1,10 @@
 package com.errday.userservice.service;
 
+import com.errday.userservice.client.OrderServiceClient;
 import com.errday.userservice.dto.UserDto;
 import com.errday.userservice.jpa.UserEntity;
 import com.errday.userservice.jpa.UserRepository;
+import com.errday.userservice.vo.ResponseOrder;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
@@ -24,6 +26,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final ModelMapper modelMapper = new ModelMapper();
+    private final OrderServiceClient orderServiceClient;
 
     @Override
     public UserDto createUser(UserDto userDto) {
@@ -43,7 +46,13 @@ public class UserServiceImpl implements UserService {
     public UserDto findByUserId(String userId) {
         UserEntity findUser = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new NoSuchElementException("User not found by userId: " + userId));
-        return modelMapper.map(findUser, UserDto.class);
+
+        UserDto userDto = modelMapper.map(findUser, UserDto.class);
+
+        List<ResponseOrder> orderList = orderServiceClient.getOrders(userId);
+        userDto.setOrders(orderList);
+
+        return userDto;
     }
 
     @Override
