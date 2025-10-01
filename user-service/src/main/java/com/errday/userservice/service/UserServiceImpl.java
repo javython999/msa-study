@@ -5,7 +5,9 @@ import com.errday.userservice.dto.UserDto;
 import com.errday.userservice.jpa.UserEntity;
 import com.errday.userservice.jpa.UserRepository;
 import com.errday.userservice.vo.ResponseOrder;
+import feign.FeignException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.security.core.userdetails.User;
@@ -19,6 +21,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -49,9 +52,13 @@ public class UserServiceImpl implements UserService {
 
         UserDto userDto = modelMapper.map(findUser, UserDto.class);
 
-        List<ResponseOrder> orderList = orderServiceClient.getOrders(userId);
-        userDto.setOrders(orderList);
-
+        List<ResponseOrder> orderList = new ArrayList<>();
+        try {
+            orderList = orderServiceClient.getOrders(userId);
+            userDto.setOrders(orderList);
+        } catch (FeignException e) {
+            log.error(e.getMessage());
+        }
         return userDto;
     }
 

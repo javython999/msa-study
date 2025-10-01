@@ -51,3 +51,8 @@ management:
           - beans
           - info
           - httpexchanges
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+    com.errday.userservice.client: DEBUG
