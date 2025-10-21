@@ -1,6 +1,7 @@
 package com.errday.orderservice.controller;
 
 import com.errday.orderservice.dto.OrderDto;
+import com.errday.orderservice.messagequeue.KafkaProducer;
 import com.errday.orderservice.service.OrderService;
 import com.errday.orderservice.vo.RequestOrder;
 import com.errday.orderservice.vo.ResponseOrder;
@@ -24,6 +25,7 @@ public class OrderController {
     private final Environment env;
     private final OrderService orderService;
     private final ModelMapper modelMapper = new  ModelMapper();
+    private final KafkaProducer kafkaProducer;
 
     @GetMapping("/health-check")
     public String status() {
@@ -42,6 +44,8 @@ public class OrderController {
 
         ResponseOrder responseOrder = modelMapper.map(orderService.createOrder(orderDto), ResponseOrder.class);
 
+        kafkaProducer.send("example-catalog-topic", orderDto);
+
         log.info("After added orders data");
         return ResponseEntity.status(HttpStatus.CREATED).body(responseOrder);
     }
@@ -56,6 +60,8 @@ public class OrderController {
         log.info("After retrieve orders data");
         return ResponseEntity.status(HttpStatus.OK).body(findByUserId);
     }
+
+
 
 }
 
