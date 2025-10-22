@@ -2,6 +2,7 @@ package com.errday.orderservice.controller;
 
 import com.errday.orderservice.dto.OrderDto;
 import com.errday.orderservice.messagequeue.KafkaProducer;
+import com.errday.orderservice.messagequeue.OrderProducer;
 import com.errday.orderservice.service.OrderService;
 import com.errday.orderservice.vo.RequestOrder;
 import com.errday.orderservice.vo.ResponseOrder;
@@ -15,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @RestController
@@ -26,6 +28,7 @@ public class OrderController {
     private final OrderService orderService;
     private final ModelMapper modelMapper = new  ModelMapper();
     private final KafkaProducer kafkaProducer;
+    private final OrderProducer orderProducer;
 
     @GetMapping("/health-check")
     public String status() {
@@ -42,9 +45,14 @@ public class OrderController {
         OrderDto orderDto = modelMapper.map(request, OrderDto.class);
         orderDto.setUserId(userId);
 
-        ResponseOrder responseOrder = modelMapper.map(orderService.createOrder(orderDto), ResponseOrder.class);
+        //ResponseOrder responseOrder = modelMapper.map(orderService.createOrder(orderDto), ResponseOrder.class);
+
+        orderDto.setOrderId(UUID.randomUUID().toString());
+        orderDto.setTotalPrice(request.getQuantity() * request.getUnitPrice());
+        ResponseOrder responseOrder = modelMapper.map(orderDto, ResponseOrder.class);
 
         kafkaProducer.send("example-catalog-topic", orderDto);
+        orderProducer.send("orders", orderDto);
 
         log.info("After added orders data");
         return ResponseEntity.status(HttpStatus.CREATED).body(responseOrder);
