@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -30,6 +32,7 @@ public class UserServiceImpl implements UserService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final ModelMapper modelMapper = new ModelMapper();
     private final OrderServiceClient orderServiceClient;
+    private final CircuitBreakerFactory circuitBreakerFactory;
 
     @Override
     public UserDto createUser(UserDto userDto) {
@@ -52,13 +55,19 @@ public class UserServiceImpl implements UserService {
 
         UserDto userDto = modelMapper.map(findUser, UserDto.class);
 
-        List<ResponseOrder> orderList = new ArrayList<>();
+        List<ResponseOrder> orderList;
+        /*
         try {
             orderList = orderServiceClient.getOrders(userId);
-            userDto.setOrders(orderList);
         } catch (FeignException e) {
             log.error(e.getMessage());
         }
+        */
+        log.info("Before call order-service");
+        CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
+        orderList = circuitBreaker.run(() -> orderServiceClient.getOrders(userId), throwable -> new ArrayList<>());
+        log.info("After call order-service");
+        userDto.setOrders(orderList);
         return userDto;
     }
 
