@@ -4,7 +4,6 @@ server:
 spring:
   application:
     name: order-service
-
   h2:
     console:
       enabled: true
@@ -34,7 +33,33 @@ eureka:
     fetch-registry: true
     register-with-eureka: true
 
+management:
+  endpoints:
+    enabled-by-default: true
+    web:
+      exposure:
+        include:
+          - refresh
+          - busrefresh
+          - health
+          - beans
+          - info
+          - httpexchanges
+  tracing:
+    enabled: true
+    sampling:
+      probability: 1.0
+    propagation:
+      consume: B3
+      produce: B3_MULTI
+  zipkin:
+    tracing:
+      endpoint: "http://localhost:9411/api/v2/spans"
+
 logging:
   level:
     org.springframework.security: DEBUG
+    com.errday.userservice.client: DEBUG
 
+  pattern:
+    level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"

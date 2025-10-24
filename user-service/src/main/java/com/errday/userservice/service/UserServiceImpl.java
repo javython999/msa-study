@@ -63,10 +63,10 @@ public class UserServiceImpl implements UserService {
             log.error(e.getMessage());
         }
         */
-        log.info("Before call order-service");
+        log.info("Before call order microservice");
         CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
         orderList = circuitBreaker.run(() -> orderServiceClient.getOrders(userId), throwable -> new ArrayList<>());
-        log.info("After call order-service");
+        log.info("After call order microservice");
         userDto.setOrders(orderList);
         return userDto;
     }
