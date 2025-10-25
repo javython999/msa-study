@@ -45,6 +45,8 @@ management:
           - beans
           - info
           - httpexchanges
+          - metrics
+          - prometheus
   tracing:
     enabled: true
     sampling:
