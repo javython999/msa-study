@@ -1,6 +1,7 @@
 encrypt:
 #  key: gpffhdndnjfemgpffhdnwkqkgpffhdmtmvmfld
   key-store:
-    location: file:///R:/keystore/apiEncrptionKey.jks
+    #location: file:///R:/keystore/apiEncrptionKey.jks
+    location: file:/apiEncrptionKey.jks
     password: 1q2w3e4r
     alias: apiEncryptKey
