@@ -2,6 +2,7 @@ package com.errday.userservice.security;
 
 import com.errday.userservice.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
@@ -17,6 +18,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.expression.WebExpressionAuthorizationManager;
 import org.springframework.security.web.util.matcher.IpAddressMatcher;
 
+@Slf4j
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -43,7 +45,7 @@ public class WebSecurity {
                         .requestMatchers("/h2-console/**", "/login", "/healthcheck", "/welcome", "/actuator/**").permitAll()
                         .requestMatchers("/**").access(
                                 new WebExpressionAuthorizationManager(
-                                        "hasIpAddress('127.0.0.1') or hasIpAddress('::1') or " + "hasIpAddress('192.168.50.90') or hasIpAddress('::1')"
+                                        "hasIpAddress('127.0.0.1') or hasIpAddress('::1') or " + "hasIpAddress('172.18.0.5') or hasIpAddress('::1') or " + "hasIpAddress('172.18.0.3') or hasIpAddress('::1')"
                                 )
                         )
                         .anyRequest().authenticated())
