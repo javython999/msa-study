@@ -5,6 +5,10 @@ import com.errday.userservice.service.UserService;
 import com.errday.userservice.vo.Greeting;
 import com.errday.userservice.vo.RequestUser;
 import com.errday.userservice.vo.ResponseUser;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,9 +25,9 @@ import java.util.Map;
 
 @Slf4j
 @RestController
-//@RequestMapping("/user-service")
 @RequestMapping("/")
 @RequiredArgsConstructor
+@Tag(name = "user-controller", description = "일반 사용자 서비스를 위한 컨트롤러 입니다.")
 public class UserController {
 
     private final Environment env;
@@ -32,6 +36,7 @@ public class UserController {
 
     private final UserService userService;
 
+    @Operation(summary = "Health check API", description = "Health check를 위한 API (포트 및 Token secret 정보를 확인 가능)")
     @GetMapping("/health-check")
     public Map<String, String> status() {
         Map<String, String> status = new LinkedHashMap<>();
@@ -45,12 +50,19 @@ public class UserController {
         return status;
     }
 
+    @Operation(summary = "환영 메시지 출력 API", description = "Welcome message를 출력하기 위한 API")
     @GetMapping("/welcome")
     public String welcome(HttpServletRequest request) {
         log.info("user.welcome ip: {}, {}, {}, {}", request.getRemoteAddr(), request.getRemoteHost(), request.getRequestURI(), request.getRequestURL());
         return greeting.getMessage();
     }
 
+    @Operation(summary = "사용자 회원가입 API", description = "user-service에 회원 가입을 위한 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "CREATED"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
+            @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR"),
+    })
     @PostMapping("/users")
     public ResponseEntity<ResponseUser> createUser(@RequestBody RequestUser user) {
         ModelMapper mapper = new ModelMapper();
@@ -64,6 +76,13 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(responseUser);
     }
 
+    @Operation(summary = "전체 사용자 목록조회 API", description = "현재 회원 가입된 전체 사용자 목록을 조회하기 위한 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized (인증 실패 오류)"),
+            @ApiResponse(responseCode = "403", description = "Forbidden (권한이 없는 페이지에 접근)"),
+            @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR"),
+    })
     @GetMapping("/users")
     public ResponseEntity<List<ResponseUser>> findAll() {
         List<ResponseUser> users = userService.findAll()
@@ -73,6 +92,14 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(users);
     }
 
+    @Operation(summary = "사용자 성보 상세조회 API", description = "사용자에 대한 상세 정보를 조회하기 위한 API (사용자 정보 + 주문 내역")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized (인증 실패 오류)"),
+            @ApiResponse(responseCode = "403", description = "Forbidden (권한이 없는 페이지에 접근)"),
+            @ApiResponse(responseCode = "404", description = "Forbidden (권한이 없는 페이지에 접근)"),
+            @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR"),
+    })
     @GetMapping("/users/{userId}")
     public ResponseEntity<ResponseUser> findUser(@PathVariable String userId) {
         UserDto findUser = userService.findByUserId(userId);

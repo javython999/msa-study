@@ -42,7 +42,15 @@ public class WebSecurity {
 
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests( auth -> auth
-                        .requestMatchers("/h2-console/**", "/login", "/healthcheck", "/welcome", "/actuator/**").permitAll()
+                        .requestMatchers(
+                                "/h2-console/**",
+                                "/login",
+                                "/healthcheck",
+                                "/welcome",
+                                "/swagger-ui/**",
+                                "/swagger-resources/**",
+                                "/v3/api-docs/**",
+                                "/actuator/**").permitAll()
                         .requestMatchers("/**").access(
                                 new WebExpressionAuthorizationManager(
                                         "hasIpAddress('127.0.0.1') or hasIpAddress('::1') or " + "hasIpAddress('172.18.0.5') or hasIpAddress('::1') or " + "hasIpAddress('172.18.0.3') or hasIpAddress('::1')"
